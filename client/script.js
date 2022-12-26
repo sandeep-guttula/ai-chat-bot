@@ -10,6 +10,7 @@ function loader(element) {
     element.textContent = ''
 
     loadInterval = setInterval(() => {
+
         element.textContent += '.';
 
         if (element.textContent === '....') {
@@ -66,7 +67,6 @@ const handleSubmit = async (e) => {
 
     form.reset()
 
-
     const uniqueId = generateUniqueId()
     chatContainer.innerHTML += chatStripe(true, " ", uniqueId)
 
@@ -76,33 +76,30 @@ const handleSubmit = async (e) => {
 
     loader(messageDiv)
 
-    // api post request
-
-    const response = await fetch('https://ai-chat-bot-4avr.onrender.com/', {
+    const response = await fetch('https://ai-chat-bot-4avr.onrender.com', {
         method: 'POST',
         headers: {
-            'Content-Type': 'application/json'
+            'Content-Type': 'application/json',
         },
         body: JSON.stringify({
-            prompt: data.get('prompt'),
-        }),
+            prompt: data.get('prompt')
+        })
     })
 
     clearInterval(loadInterval)
-    messageDiv.textContent = '';
+    messageDiv.innerHTML = " "
 
-    if(response.ok){
+    if (response.ok) {
         const data = await response.json();
-        const parsedData = data.bot.trim();
-
-        console.log({parsedData});
+        const parsedData = data.bot.trim() 
 
         typeText(messageDiv, parsedData)
     } else {
-        const err = await response.text();
-        messageDiv.innerHTML = `Something went wrong: ${err}`
-    }
+        const err = await response.text()
 
+        messageDiv.innerHTML = "Something went wrong"
+        alert(err)
+    }
 }
 
 form.addEventListener('submit', handleSubmit)
